@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>순우리말 날짜</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        #result-container {
+            width: 500px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom right, white, #2E7AFF);
+        }
+        #result {
+            font-size: 30px;
+            font-weight: bold;
+            color: black;
+            text-align: center;
+        }
+        .highlight {
+            color: #2E7AFF;
+        }
+    </style>
+    <script>
+        function getKoreanDate(month, day) {
+            const months = ["해오름달", "시샘달", "물오름달", "잎새달", "푸른달", "누리달", "견우직녀달", "타오름달", "열매달", "하늘연달", "미틈달", "매듭달"];
+            const days = ["하루", "이틀", "사흘", "나흘", "닷새", "엿새", "이레", "여드레", "아흐레", "열흘", "열하루", "열이틀", "열사흘", "열나흘", "보름", "열엿새", "열이레", "열여드레", "열아흐레", "스무날", "스물하루", "스물이틀", "스물사흘", "스물나흘", "스물닷새", "스물엿새", "스물이레", "스물여드레", "스물아흐레", "그믐날", "그믐하루"];
+            
+            return months[month - 1] + " " + days[day - 1];
+        }
+
+        function displayKoreanDate() {
+            const name = document.getElementById("important-name").value;
+            const date = document.getElementById("start").value;
+            if (!name || !date) {
+                alert("날짜와 중요한 날 이름을 입력해주세요.");
+                return;
+            }
+
+            const [year, month, day] = date.split("-").map(Number);
+            const koreanDate = getKoreanDate(month, day);
+
+            const resultElement = document.getElementById("result");
+            resultElement.innerHTML = `<span class="highlight">${name}</span>은/는<br> <span class="highlight">${koreanDate}</span>입니다.`;
+        }
+
+        function downloadImage() {
+            const resultContainer = document.getElementById("result-container");
+            html2canvas(resultContainer, {width: 500, height: 500}).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = 'result.png';
+                link.click();
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>순우리말 날짜</h1>
+    <h2>순우리말로 날짜를 읽어봐요.</h2>
+    <span>중요한 날 이름과 날짜를 입력하시오.</span><br>
+    <span>중요한 날 이름 : </span>
+    <input type="text" id="important-name"><br>
+    <span>중요한 날 날짜 : </span>
+    <input type="date" id="start" name="trip-start" min="1900-01-01" max="2100-12-31"><br><br>
+    <button onclick="displayKoreanDate()">확인</button>
+    <button onclick="downloadImage()">이미지 다운로드</button>
+    <div id="result-container">
+        <p id="result"></p>
+    </div>
+</body>
+</html>
